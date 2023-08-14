@@ -44,7 +44,7 @@
     const listElement = document.getElementById("comment-id")
 
 
-    const fetchPromise = fetch(" https://wedev-api.sky.pro/api/v1/:personal-key/comments", 
+    const fetchPromise = fetch(" https://wedev-api.sky.pro/api/v1/:yuliana-gal/comments", 
    {
     method: "GET",
    });
@@ -59,7 +59,7 @@
    });
 
    res.json().then((responseData) => {
-    const = appComments = responseData.comments.map((comment) => {
+    const appComments = responseData.comments.map((comment) => {
       return {
         name: comment.author.name,
         date: new Date(comment.date),
@@ -91,7 +91,7 @@
 
     function initEventAnswers() {
       const commentElements = document.querySelectorAll(".comment");
-      for (const commentElement of commentElements) {
+      for (const commentElement of commentsElements) {
         commentElement.addEventListener("click", () => {
           const index = commentElement.dataset.index;
           commentInputElement.value = `>${comments[index].comment} \n ${comments[index].name}`
@@ -191,7 +191,7 @@ return dd + '.' + mm + '.' + yy + ' ' + hh + ':' + min;
 renderComments ();
 initEventListeners ();
     })
-    const fetchPromise = fetch(" https://wedev-api.sky.pro/api/v1/:personal-key/comments", 
+    const fetchesPromise = fetch(" https://wedev-api.sky.pro/api/v1/:yuliana-gal/comments", 
    {
     method: "POST",
     body: JSON.stringify({
@@ -199,7 +199,7 @@ initEventListeners ();
     }),
    });
 
-   fetchPromise.then((response) => {
+   fetchesPromise.then((response) => {
     const jsonPromise = response.json();
     jsonPromise.then((responseData) => {
       console.log(responseData);
