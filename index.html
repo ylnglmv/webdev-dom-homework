@@ -8,7 +8,9 @@
 </head>
 
 <body>
+  
   <div class="container">
+    <div class="hide"></div>
     <ul id="comment-id" class="comments">
 
     </ul>
@@ -33,7 +35,6 @@
   const commentElement = document.getElementById('comment-id')
   const nameInputElement = document.getElementById('name-input')
   const commentInputElement = document.getElementById('comment-input')
-  const formElement = document.getElementById('form-id')
 
   const listElement = document.getElementById("comment-id")
 
@@ -142,9 +143,10 @@
 
   fetchAndRenderComments();
 
-  //formElement.disabled = true;
-  //formElement.textContnet = 'Комментарий загружается...';
-
+ 
+    let div = document.querySelector('.hide');
+    div.textContent = 'Комментарии загружаются';
+      
   const postComments = () => {
     fetch("https://wedev-api.sky.pro/api/v1/:yuliana-gal/comments",
       {
@@ -164,15 +166,16 @@
       }
     })
     .then((responseData) => {
+      div.textContent = '';
       return fetchAndRenderComments();
     })
     .then(() => {
-      //formElement.disabled = false;
+     div.textContent = '';
       document.getElementById('name-input').value = '';
       document.getElementById('comment-input').value = '';
     })
     .catch((error) => {
-      //formElement.disabled = false;
+      div.textContent = '';
       if (error.message === "Мало символов") return alert ('Введите больше 3-х символов')
       alert('Кажется, у вас сломался интернет, попробуйте позже');
       console.warn(error);
