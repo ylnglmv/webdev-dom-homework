@@ -1,13 +1,7 @@
 body {
     margin: 0;
   }
-  /* div.hide{
-        display: none;
-      } */
-      .divhide {
-        display: block;
-      }
-    
+ 
   .container {
     font-family: Helvetica;
     color: #ffffff;
