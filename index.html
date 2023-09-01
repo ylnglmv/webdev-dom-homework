@@ -150,6 +150,7 @@
    
   const postComments = () => {
     let div2 = document.querySelector('.hideform');
+    document.getElementById("form-id").style.display = "none";
     div2.textContent = 'Комментарий добавляется';
     fetch("https://wedev-api.sky.pro/api/v1/:yuliana-gal/comments",
       {
@@ -174,6 +175,7 @@
     })
     .then(() => {
       div2.textContent = "";
+      document.getElementById("form-id").style.display = "initial";
       document.getElementById('name-input').value = '';
       document.getElementById('comment-input').value = '';
     })
