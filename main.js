@@ -2,6 +2,11 @@
 
 import { getComments } from "./api.js";
 import { postComment } from "./api.js";
+import { renderReg } from "./registration.js";
+import { renderLogin } from "./renderlogin.js";
+import { token } from "./api.js";
+import { format } from "date-fns";
+
 
   const buttonElement = document.getElementById('add-button')
   const commentElement = document.getElementById('comment-id')
@@ -11,6 +16,28 @@ import { postComment } from "./api.js";
   const listElement = document.getElementById("comment-id")
 
   let comments = [];
+
+  const renderForm = () => {
+    const renderElement = document.getElementById("hideform");
+    const formHtml =  `<div id="form-id" class="add-form">
+    <input id="name-input" type="text" class="add-form-name" placeholder="Введите ваше имя" />
+    <textarea id="comment-input" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
+      rows="4"></textarea>
+    <div class="add-form-row">
+      <button id="add-button" class="add-form-button">Написать</button>
+    </div>
+  </div>`
+  if (token) {
+    renderElement.innerHTML = formHtml; 
+    initEventListeners();
+    initEventAnswers();
+  } else {
+    const loginForm = `<div <p>Чтобы добавить комментарий, авторизуйтесь<p>
+    <button id="login-button" class="add-form-button2">Войти</button> </div>`
+    renderElement.innerHTML = loginForm;
+    
+  }
+  }
 
   const fetchAndRenderComments = () => {
     let div = document.querySelector('.hide');
@@ -36,16 +63,41 @@ import { postComment } from "./api.js";
 
 
   function initEventAnswers() {
-    const commentElements = document.querySelectorAll(".comment");
+    const buttonElement = document.getElementById('add-button')
+    const nameInputElement = document.getElementById('name-input')
+  const commentInputElement = document.getElementById('comment-input')
+  const commentElements = document.querySelectorAll(".comment");
     for (const commentElement of commentElements) {
-      commentElement.addEventListener("click", () => {
-        const index = commentElement.dataset.index;
+       commentElement.addEventListener("click", () => {
+         const index = commentElement.dataset.index;
         commentInputElement.value = `>${comments[index].text} \n ${comments[index].name}`
       })
-    }
-  };
+     }
+     buttonElement.addEventListener("click", () => {
+
+      nameInputElement.classList.remove("error");
+      commentInputElement.classList.remove("error");
+  
+      if (nameInputElement.value === "") {
+        nameInputElement.classList.add("error");
+        return;
+      }
+      if (commentInputElement.value === "") {
+        commentInputElement.classList.add("error");
+        return;
+      }
+  
+      const newDate = new Date()
+      postComments();
+    });
+  
+  
+   };
 
   const initEventListeners = () => {
+    const buttonElement = document.getElementById('add-button')
+    const nameInputElement = document.getElementById('name-input')
+  const commentInputElement = document.getElementById('comment-input')
     const likesElements = document.querySelectorAll(".like-button");
     for (const likesElement of likesElements) {
       likesElement.addEventListener("click", (e) => {
@@ -61,6 +113,26 @@ import { postComment } from "./api.js";
         renderComments()
       })
     }
+
+  buttonElement.addEventListener("click", () => {
+
+    nameInputElement.classList.remove("error");
+    commentInputElement.classList.remove("error");
+
+    if (nameInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      return;
+    }
+    if (commentInputElement.value === "") {
+      commentInputElement.classList.add("error");
+      return;
+    }
+
+    const newDate = new Date()
+    postComments();
+  });
+
+
   };
 
 
@@ -85,11 +157,13 @@ import { postComment } from "./api.js";
   }
 
   function renderComments() {
+
     const commentsHtml = comments.map((comment, index) => {
+      const createDate = format(new Date(comment.date), 'yyyy-MM-dd hh.mm.ss');
       return `<li class="comment" data-index="${index}">
           <div class="comment-header">
             <div> ${comment.name} </div>
-            <div> ${comment.date} </div>
+            <div> ${createDate} </div>
           </div>
           <div class="comment-body">
             <div class="comment-text">
@@ -105,15 +179,19 @@ import { postComment } from "./api.js";
         </li>`;
     }).join('');
     listElement.innerHTML = commentsHtml;
-    initEventListeners();
-    initEventAnswers();
+    renderForm();
   }
 
   fetchAndRenderComments();
 
+  renderLogin({ fetchAndRenderComments }); 
+  renderReg({ fetchAndRenderComments })
+
    
   const postComments = () => {
-    let div2 = document.querySelector('.hideform');
+    const nameInputElement = document.getElementById('name-input')
+  const commentInputElement = document.getElementById('comment-input')
+    let div2 = document.querySelector("#hideform");
     document.getElementById("form-id").style.display = "none";
     div2.textContent = 'Комментарий добавляется';
     postComment( { name: nameInputElement.value, text: commentInputElement.value } ).then((responseData) => {
@@ -122,7 +200,7 @@ import { postComment } from "./api.js";
     })
     .then(() => {
       div2.textContent = "";
-      document.getElementById("form-id").style.display = "initial";
+      document.getElementById("form-id").style.display = "flex";
       document.getElementById('name-input').value = '';
       document.getElementById('comment-input').value = '';
     })
@@ -133,20 +211,20 @@ import { postComment } from "./api.js";
     });
   };
 
-  buttonElement.addEventListener("click", () => {
+   buttonElement.addEventListener("click", () => {
 
-    nameInputElement.classList.remove("error");
-    commentInputElement.classList.remove("error");
+     nameInputElement.classList.remove("error");
+     commentInputElement.classList.remove("error");
 
-    if (nameInputElement.value === "") {
-      nameInputElement.classList.add("error");
-      return;
-    }
-    if (commentInputElement.value === "") {
-      commentInputElement.classList.add("error");
-      return;
-    }
+     if (nameInputElement.value === "") {
+       nameInputElement.classList.add("error");
+       return;
+     }
+     if (commentInputElement.value === "") {
+       commentInputElement.classList.add("error");
+       return;
+     }
 
-    const newDate = new Date()
-    postComments();
-  });
+     const newDate = new Date()
+     postComments();
+   });
