@@ -2,7 +2,7 @@ import { registration, setToken, token } from "./api.js";
 
 
 export const renderReg = ({ fetchAndRenderComments }) => {
-    const regElement = document.getElementById("reg");
+    const regElement = document.getElementById("app");
     const regHtml = `<div class="container">
     <div id="form-id" class="add-form">
       <p>Форма регистрации</p>

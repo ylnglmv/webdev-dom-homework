@@ -13,13 +13,16 @@ import { format } from "date-fns";
   const nameInputElement = document.getElementById('name-input')
   const commentInputElement = document.getElementById('comment-input')
 
-  const listElement = document.getElementById("comment-id")
 
-  let comments = [];
+  const listElement = document.getElementById("comment-id")
+  const appElement = document.querySelector(".container");
+  export let comments = [];
 
   const renderForm = () => {
-    const renderElement = document.getElementById("hideform");
-    const formHtml =  `<div id="form-id" class="add-form">
+     const appHTML =  
+    `${
+      token 
+      ? `<div id="form-id" class="add-form">
     <input id="name-input" type="text" class="add-form-name" placeholder="Введите ваше имя" />
     <textarea id="comment-input" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
       rows="4"></textarea>
@@ -27,29 +30,39 @@ import { format } from "date-fns";
       <button id="add-button" class="add-form-button">Написать</button>
     </div>
   </div>`
-  if (token) {
-    renderElement.innerHTML = formHtml; 
-    initEventListeners();
-    initEventAnswers();
-  } else {
-    const loginForm = `<div <p>Чтобы добавить комментарий, авторизуйтесь<p>
-    <button id="login-button" class="add-form-button2">Войти</button> </div>`
-    renderElement.innerHTML = loginForm;
+  : `<div class="authorization">Чтобы добавить комментарий, <a href="index.html" id="authorlink" class="authorization-link">авторизуйтесь</a></div>`
+    }`
+  
+  appElement.innerHTML += appHTML;
+  const authorElement = document.getElementById("authorlink");
+    if (authorElement) {
+    authorElement.addEventListener("click", (event) => {
+        event.preventDefault();
     
+        renderLogin({ comments, fetchAndRenderComments });
+    });
   }
-  }
+  const formElement = document.getElementById("form-id");
+  if (formElement) {
+    initEventListeners();
+}};
 
-  const fetchAndRenderComments = () => {
-    let div = document.querySelector('.hide');
+  export const fetchAndRenderComments = () => {
+    let div = document.createElement('div');
     div.textContent = 'Комментарии загружаются';
+    appElement.append(div)
     getComments().then((responseData) => {
         return comments = responseData.comments;
       }).then((commentsData) => {
-        div.textContent = "";
+        appElement.removeChild(div)
         const appComments = commentsData.map((comment) => {
+          const createDate = format(
+            new Date(comment.date),
+            "yyyy-MM-dd hh:mm:ss"
+        );
           return {
             name: comment.author.name,
-            date: new Date(comment.date),
+            date: createDate,
             text: comment.text,
             likes: comment.likes,
             isLiked: false,
@@ -60,6 +73,7 @@ import { format } from "date-fns";
       })
   };
 
+  fetchAndRenderComments();
 
 
   function initEventAnswers() {
@@ -157,6 +171,7 @@ import { format } from "date-fns";
   }
 
   function renderComments() {
+    appElement.innerHTML = '';
 
     const commentsHtml = comments.map((comment, index) => {
       const createDate = format(new Date(comment.date), 'yyyy-MM-dd hh.mm.ss');
@@ -178,24 +193,26 @@ import { format } from "date-fns";
           </div>
         </li>`;
     }).join('');
-    listElement.innerHTML = commentsHtml;
+    listElement.innerHTML += commentsHtml;
+    appElement.append(listElement);
+    
     renderForm();
   }
 
-  fetchAndRenderComments();
+  // fetchAndRenderComments();
 
-  renderLogin({ fetchAndRenderComments }); 
-  renderReg({ fetchAndRenderComments })
+  // renderLogin({ fetchAndRenderComments }); 
+  // renderReg({ fetchAndRenderComments })
 
    
   const postComments = () => {
     const nameInputElement = document.getElementById('name-input')
   const commentInputElement = document.getElementById('comment-input')
-    let div2 = document.querySelector("#hideform");
-    document.getElementById("form-id").style.display = "none";
-    div2.textContent = 'Комментарий добавляется';
+    //let div2 = document.querySelector("#hideform");
+    //document.getElementById("form-id").style.display = "none";
+   // div2.textContent = 'Комментарий добавляется';
     postComment( { name: nameInputElement.value, text: commentInputElement.value } ).then((responseData) => {
-      div2.textContent = "";
+      //div2.textContent = "";
       return fetchAndRenderComments();
     })
     .then(() => {
@@ -211,20 +228,20 @@ import { format } from "date-fns";
     });
   };
 
-   buttonElement.addEventListener("click", () => {
+  //  buttonElement.addEventListener("click", () => {
 
-     nameInputElement.classList.remove("error");
-     commentInputElement.classList.remove("error");
+  //    nameInputElement.classList.remove("error");
+  //    commentInputElement.classList.remove("error");
 
-     if (nameInputElement.value === "") {
-       nameInputElement.classList.add("error");
-       return;
-     }
-     if (commentInputElement.value === "") {
-       commentInputElement.classList.add("error");
-       return;
-     }
+  //    if (nameInputElement.value === "") {
+  //      nameInputElement.classList.add("error");
+  //      return;
+  //    }
+  //    if (commentInputElement.value === "") {
+  //      commentInputElement.classList.add("error");
+  //      return;
+  //    }
 
-     const newDate = new Date()
-     postComments();
-   });
+  //    const newDate = new Date()
+  //    postComments();
+  //  });
